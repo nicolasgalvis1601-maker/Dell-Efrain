@@ -1,9 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf" class="app-layout">
 
-    <!-- =========================================================
-         ENCABEZADO
-    ========================================================== -->
+
     <q-header class="main-header">
 
       <q-toolbar class="q-px-lg">
@@ -43,16 +41,10 @@
     </q-header>
 
 
-    <!-- =========================================================
-         CONTENIDO
-    ========================================================== -->
     <q-page-container>
 
       <q-page class="main-page q-pa-lg">
 
-        <!-- =====================================================
-             ENCABEZADO DE PÁGINA
-        ====================================================== -->
         <div class="page-heading q-mb-lg">
 
           <div>
@@ -79,9 +71,6 @@
         </div>
 
 
-        <!-- =====================================================
-             TARJETAS RESUMEN
-        ====================================================== -->
         <div class="row q-col-gutter-lg q-mb-xl">
 
           <!-- TOTAL -->
@@ -117,7 +106,7 @@
           </div>
 
 
-          <!-- PENDIENTES -->
+         
           <div class="col-12 col-md-4">
 
             <q-card class="summary-card summary-pending">
@@ -150,7 +139,7 @@
           </div>
 
 
-          <!-- PAGADOS -->
+    
           <div class="col-12 col-md-4">
 
             <q-card class="summary-card summary-paid">
@@ -185,9 +174,7 @@
         </div>
 
 
-        <!-- =====================================================
-             SIN SERVICIOS
-        ====================================================== -->
+     
         <q-card
           v-if="servicios.length === 0"
           class="empty-card"
@@ -225,9 +212,7 @@
         </q-card>
 
 
-        <!-- =====================================================
-             LISTADO
-        ====================================================== -->
+     
         <div
           v-for="servicio in servicios"
           :key="servicio.id"
@@ -279,7 +264,7 @@
                 </div>
 
 
-                <!-- ESTADO EQUIPO -->
+       
                 <q-chip
                   :color="obtenerColorEstado(servicio.estadoEquipo)"
                   text-color="white"
@@ -303,12 +288,11 @@
             <q-separator />
 
 
-            <!-- INFORMACIÓN -->
             <q-card-section>
 
               <div class="row q-col-gutter-lg">
 
-                <!-- ARREGLOS -->
+             
                 <div class="col-12 col-md-6">
 
                   <div class="data-title">
@@ -332,7 +316,6 @@
                 </div>
 
 
-                <!-- TÉCNICO -->
                 <div class="col-12 col-md-3">
 
                   <div class="data-title">
@@ -444,7 +427,7 @@
                 </div>
 
 
-                <!-- MÉTODO -->
+             
                 <div class="col-12 col-sm-6 col-md-3">
 
                   <div class="data-title">
@@ -458,7 +441,7 @@
                 </div>
 
 
-                <!-- MARCA -->
+               
                 <div class="col-12 col-sm-6 col-md-3">
 
                   <div class="data-title">
@@ -488,7 +471,7 @@
               </div>
 
 
-              <!-- OBSERVACIONES -->
+              
               <div
                 v-if="servicio.observaciones"
                 class="observation-container q-mt-lg"
@@ -505,7 +488,6 @@
               </div>
 
 
-              <!-- CALIFICACIÓN -->
               <div
                 v-if="
                   servicio.estadoEquipo === 'Entregado' &&
@@ -535,7 +517,7 @@
             <q-separator />
 
 
-            <!-- ACCIONES -->
+        
             <q-card-actions
               align="right"
               class="q-pa-md"
@@ -589,9 +571,7 @@
     </q-page-container>
 
 
-    <!-- =========================================================
-         MODAL NUEVO / EDITAR
-    ========================================================== -->
+   
     <q-dialog
       v-model="mostrarModal"
       persistent
@@ -634,9 +614,7 @@
 
           <q-card-section class="q-pa-lg">
 
-            <!-- =================================================
-                 DATOS DEL CLIENTE
-            ================================================== -->
+     
             <div class="form-section-title">
               <q-icon
                 name="person"
@@ -658,9 +636,7 @@
             />
 
 
-            <!-- =================================================
-                 DATOS DEL EQUIPO
-            ================================================== -->
+          
             <div class="form-section-title">
               <q-icon
                 name="smartphone"
@@ -671,7 +647,6 @@
             </div>
 
 
-            <!-- MARCA -->
             <q-select
               v-model="servicioActual.marca"
               label="Marca *"
@@ -686,7 +661,7 @@
             />
 
 
-            <!-- MODELO -->
+         
             <q-input
               v-model.trim="servicioActual.modelo"
               label="Modelo *"
@@ -700,7 +675,7 @@
             />
 
 
-            <!-- ARREGLOS -->
+        
             <q-select
               v-model="servicioActual.arreglos"
               label="Arreglos por hacer *"
@@ -717,9 +692,7 @@
             />
 
 
-            <!-- =================================================
-                 INFORMACIÓN DEL SERVICIO
-            ================================================== -->
+          
             <div class="form-section-title">
               <q-icon
                 name="assignment"
@@ -730,7 +703,6 @@
             </div>
 
 
-            <!-- TÉCNICO -->
             <q-select
               v-model="servicioActual.tecnico"
               label="Técnico que atendió *"
@@ -747,7 +719,7 @@
             />
 
 
-            <!-- FECHA AUTOMÁTICA -->
+         
             <q-input
               :model-value="formatearFecha(servicioActual.fecha)"
               label="Fecha y hora de recepción"
@@ -783,9 +755,6 @@
             />
 
 
-            <!-- =================================================
-                 PAGO
-            ================================================== -->
             <div class="form-section-title">
               <q-icon
                 name="payments"
@@ -796,7 +765,7 @@
             </div>
 
 
-            <!-- MÉTODO -->
+          
             <q-select
               v-model="servicioActual.metodoPago"
               label="Método de pago *"
@@ -815,7 +784,7 @@
             />
 
 
-            <!-- ESTADO PAGO -->
+           
             <q-select
               v-model="servicioActual.estadoPago"
               label="Estado del pago *"
@@ -835,7 +804,7 @@
             />
 
 
-            <!-- ABONO -->
+          
             <q-input
               v-if="servicioActual.estadoPago === 'Abono'"
               v-model.number="servicioActual.valorAbono"
@@ -861,7 +830,7 @@
             />
 
 
-            <!-- ESTADO DEL EQUIPO -->
+           
             <q-select
               v-model="servicioActual.estadoEquipo"
               label="Estado del equipo"
@@ -878,7 +847,7 @@
             />
 
 
-            <!-- OBSERVACIONES -->
+           
             <q-input
               v-model.trim="servicioActual.observaciones"
               label="Observaciones"
@@ -892,7 +861,7 @@
           </q-card-section>
 
 
-          <!-- BOTONES -->
+        
           <q-card-actions
             class="form-actions q-pa-lg"
             align="right"
@@ -922,9 +891,7 @@
     </q-dialog>
 
 
-    <!-- =========================================================
-         CONFIRMACIÓN ELIMINACIÓN
-    ========================================================== -->
+   
     <q-dialog
       v-model="mostrarConfirmacion"
       persistent
@@ -995,11 +962,7 @@ import { ref } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 
 
-/*
-|--------------------------------------------------------------------------
-| PERSISTENCIA
-|--------------------------------------------------------------------------
-*/
+
 
 const servicios = useLocalStorage(
   'servicios-tecnicos-don-efrain',
@@ -1007,11 +970,6 @@ const servicios = useLocalStorage(
 )
 
 
-/*
-|--------------------------------------------------------------------------
-| VARIABLES
-|--------------------------------------------------------------------------
-*/
 
 const mostrarModal = ref(false)
 const modoEdicion = ref(false)
@@ -1020,11 +978,7 @@ const mostrarConfirmacion = ref(false)
 const servicioAEliminar = ref(null)
 
 
-/*
-|--------------------------------------------------------------------------
-| MARCAS
-|--------------------------------------------------------------------------
-*/
+
 
 const marcas = [
   { label: 'Apple', value: 'Apple' },
@@ -1043,11 +997,7 @@ const marcas = [
 ]
 
 
-/*
-|--------------------------------------------------------------------------
-| ARREGLOS
-|--------------------------------------------------------------------------
-*/
+
 
 const opcionesArreglos = [
   'Cambio de pantalla',
@@ -1065,22 +1015,14 @@ const opcionesArreglos = [
 ]
 
 
-/*
-|--------------------------------------------------------------------------
-| SERVICIO ACTUAL
-|--------------------------------------------------------------------------
-*/
+
 
 const servicioActual = ref(
   crearServicioVacio()
 )
 
 
-/*
-|--------------------------------------------------------------------------
-| SERVICIO VACÍO
-|--------------------------------------------------------------------------
-*/
+
 
 function crearServicioVacio() {
 
@@ -1119,11 +1061,7 @@ function crearServicioVacio() {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| FECHA AUTOMÁTICA
-|--------------------------------------------------------------------------
-*/
+
 
 function obtenerFechaActual() {
 
@@ -1151,11 +1089,7 @@ function obtenerFechaActual() {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| NUEVO SERVICIO
-|--------------------------------------------------------------------------
-*/
+
 
 function nuevoServicio() {
 
@@ -1171,11 +1105,7 @@ function nuevoServicio() {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| GUARDAR
-|--------------------------------------------------------------------------
-*/
+
 
 function guardarServicio() {
 
@@ -1193,11 +1123,7 @@ function guardarServicio() {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| AGREGAR
-|--------------------------------------------------------------------------
-*/
+
 
 function agregarServicio() {
 
@@ -1253,11 +1179,7 @@ function agregarServicio() {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| CARGAR PARA EDITAR
-|--------------------------------------------------------------------------
-*/
+
 
 function cargarServicio(servicio) {
 
@@ -1320,11 +1242,6 @@ function cargarServicio(servicio) {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| EDITAR
-|--------------------------------------------------------------------------
-*/
 
 function editarServicio() {
 
@@ -1397,11 +1314,7 @@ function editarServicio() {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| CONFIRMAR ELIMINACIÓN
-|--------------------------------------------------------------------------
-*/
+
 
 function confirmarEliminar(id) {
 
@@ -1428,11 +1341,7 @@ function confirmarEliminar(id) {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| ELIMINAR
-|--------------------------------------------------------------------------
-*/
+
 
 function eliminarServicio() {
 
@@ -1468,11 +1377,7 @@ function eliminarServicio() {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| ESTADO DE PAGO
-|--------------------------------------------------------------------------
-*/
+
 
 function manejarEstadoPago(valor) {
 
@@ -1485,11 +1390,7 @@ function manejarEstadoPago(valor) {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| CONTADORES
-|--------------------------------------------------------------------------
-*/
+
 
 function contarPendientes() {
 
@@ -1511,11 +1412,6 @@ function contarPagados() {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| ESTADOS VISUALES
-|--------------------------------------------------------------------------
-*/
 
 function obtenerColorEstado(estado) {
 
@@ -1583,11 +1479,7 @@ function obtenerIconoEstado(estado) {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| FORMATO PRECIO
-|--------------------------------------------------------------------------
-*/
+
 
 function formatearPrecio(precio) {
 
@@ -1609,11 +1501,7 @@ function formatearPrecio(precio) {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| FORMATO FECHA
-|--------------------------------------------------------------------------
-*/
+
 
 function formatearFecha(fecha) {
 
@@ -1646,9 +1534,7 @@ function formatearFecha(fecha) {
 
 
 <style>
-/* =============================================================
-   GENERAL
-============================================================= */
+ */
 
 body {
   margin: 0;
@@ -1669,9 +1555,7 @@ body {
 }
 
 
-/* =============================================================
-   ENCABEZADO
-============================================================= */
+
 
 .main-header {
   background: #17202a;
@@ -1718,9 +1602,7 @@ body {
 }
 
 
-/* =============================================================
-   TITULO
-============================================================= */
+
 
 .page-heading {
   display: flex;
@@ -1747,9 +1629,7 @@ body {
 }
 
 
-/* =============================================================
-   RESUMEN
-============================================================= */
+
 
 .summary-card {
   border-radius: 14px;
@@ -1830,9 +1710,7 @@ body {
 }
 
 
-/* =============================================================
-   SERVICIOS
-============================================================= */
+
 
 .service-wrapper {
   margin-bottom: 20px;
@@ -1888,9 +1766,6 @@ body {
 }
 
 
-/* =============================================================
-   EQUIPO
-============================================================= */
 
 .device-icon {
   width: 58px;
@@ -1928,9 +1803,6 @@ body {
 }
 
 
-/* =============================================================
-   DATOS
-============================================================= */
 
 .data-title {
   margin-bottom: 7px;
@@ -2004,9 +1876,6 @@ body {
 }
 
 
-/* =============================================================
-   VACÍO
-============================================================= */
 
 .empty-card {
   border-radius: 15px;
@@ -2053,9 +1922,6 @@ body {
 }
 
 
-/* =============================================================
-   FORMULARIO
-============================================================= */
 
 .form-card {
   width: 680px;
