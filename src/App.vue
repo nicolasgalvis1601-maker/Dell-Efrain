@@ -1,220 +1,216 @@
-```vue
 <template>
-  <q-layout view="hHh Lpr lFf" class="bg-grey-2">
+  <q-layout view="lHh Lpr lFf" class="bg-grey-2">
 
-    
-    <q-drawer v-model="drawer" show-if-above :width="230" bordered>
-      <div class="q-pa-md row items-center">
-        <q-avatar color="primary" text-color="white">
-          <q-icon name="handyman" />
+    <!-- ENCABEZADO -->
+    <q-header elevated class="bg-primary">
+      <q-toolbar>
+
+        <q-avatar color="white" text-color="primary">
+          🔧
         </q-avatar>
-        <div class="q-ml-sm">
-          <b>Don Efraín</b>
-          <div class="text-caption text-grey">Servicio técnico</div>
-        </div>
-      </div>
 
-      <q-separator />
+        <q-toolbar-title>
+          Servicio Técnico Don Efraín
+          <div class="text-caption">
+            Gestión de celulares y tablets
+          </div>
+        </q-toolbar-title>
 
-      <q-list padding>
-        <q-item clickable active active-class="bg-blue-1 text-primary">
-          <q-item-section avatar>
-            <q-icon name="dashboard" />
-          </q-item-section>
-          <q-item-section>Dashboard</q-item-section>
-        </q-item>
+        <q-btn
+          color="white"
+          text-color="primary"
+          icon="add"
+          label="Nuevo servicio"
+          @click="nuevoServicio"
+        />
 
-        <q-item clickable @click="nuevoServicio">
-          <q-item-section avatar>
-            <q-icon name="add_circle" />
-          </q-item-section>
-          <q-item-section>Nuevo servicio</q-item-section>
-        </q-item>
-
-        <q-item>
-          <q-item-section avatar>
-            <q-icon name="phone_android" />
-          </q-item-section>
-          <q-item-section>Equipos</q-item-section>
-        </q-item>
-
-        <q-item>
-          <q-item-section avatar>
-            <q-icon name="payments" />
-          </q-item-section>
-          <q-item-section>Pagos</q-item-section>
-        </q-item>
-      </q-list>
-    </q-drawer>
+      </q-toolbar>
+    </q-header>
 
 
     <q-page-container>
-      <q-page>
+      <q-page class="q-pa-md">
 
-        <q-header class="bg-white text-dark">
-          <q-toolbar>
-            <q-btn
-              flat
-              round
-              icon="menu"
-              @click="drawer = !drawer"
-            />
 
-            <q-toolbar-title>
-              <b>Dashboard</b>
-              <div class="text-caption text-grey">
-                Gestión del servicio técnico
-              </div>
-            </q-toolbar-title>
+        <div class="row q-col-gutter-md q-mb-lg">
 
-            <q-btn
-              color="primary"
-              icon="add"
-              label="Nuevo servicio"
-              @click="nuevoServicio"
-            />
-          </q-toolbar>
-        </q-header>
+          <div class="col-12 col-sm-4">
+            <q-card class="dashboard-card bg-blue-1">
+              <q-card-section>
+                <div class="text-subtitle2 text-grey-8">
+                  Total de servicios
+                </div>
 
-        <div class="q-pa-lg">
-
-     
-          <q-banner
-            class="bg-primary text-white rounded-borders q-mb-lg"
-          >
-            <template v-slot:avatar>
-              <q-icon name="build_circle" />
-            </template>
-
-            <b class="text-h6">¡Bienvenido al taller! 👋</b>
-            <div>
-              Administra los servicios técnicos registrados.
-            </div>
-          </q-banner>
-
-        
-          <div class="row q-col-gutter-md q-mb-lg">
-
-            <div
-              v-for="dato in estadisticas"
-              :key="dato.titulo"
-              class="col-12 col-sm-6 col-md-3"
-            >
-              <q-card flat bordered>
-                <q-card-section>
-                  <q-icon
-                    :name="dato.icono"
-                    :color="dato.color"
-                    size="30px"
-                  />
-
-                  <div class="text-h5 text-weight-bold q-mt-sm">
-                    {{ dato.valor }}
-                  </div>
-
-                  <div class="text-grey">
-                    {{ dato.titulo }}
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-
+                <div class="text-h4 text-primary">
+                  {{ servicios.length }}
+                </div>
+              </q-card-section>
+            </q-card>
           </div>
 
-          <!-- TÍTULO -->
-          <div class="row items-center justify-between q-mb-md">
-            <div>
-              <div class="text-h5 text-weight-bold">
-                Servicios registrados
-              </div>
-              <div class="text-grey">
-                Equipos recibidos en el taller
-              </div>
-            </div>
+          <div class="col-12 col-sm-4">
+            <q-card class="dashboard-card bg-orange-1">
+              <q-card-section>
+                <div class="text-subtitle2 text-grey-8">
+                  Pendientes de entrega
+                </div>
 
-            <q-btn
-              flat
-              color="primary"
-              icon="add"
-              label="Registrar"
-              @click="nuevoServicio"
-            />
+                <div class="text-h4 text-orange-9">
+                  {{ contarPendientes() }}
+                </div>
+              </q-card-section>
+            </q-card>
           </div>
 
-          
-          <q-card
-            v-if="!servicios.length"
-            flat
-            bordered
-            class="q-pa-xl text-center"
-          >
-            <q-icon
-              name="phone_android"
-              size="70px"
-              color="grey-5"
-            />
+          <div class="col-12 col-sm-4">
+            <q-card class="dashboard-card bg-green-1">
+              <q-card-section>
+                <div class="text-subtitle2 text-grey-8">
+                  Pagados
+                </div>
 
-            <div class="text-h6 q-mt-md">
-              No hay servicios registrados
+                <div class="text-h4 text-green-9">
+                  {{ contarPagados() }}
+                </div>
+              </q-card-section>
+            </q-card>
+          </div>
+
+        </div>
+
+
+        <div class="row items-center justify-between q-mb-md">
+
+          <div>
+            <div class="text-h5 text-weight-bold text-grey-9">
+              Servicios registrados
             </div>
 
-            <q-btn
-              color="primary"
-              icon="add"
-              label="Nuevo servicio"
-              class="q-mt-md"
-              @click="nuevoServicio"
-            />
-          </q-card>
+            <div class="text-grey-7">
+              Administra los equipos recibidos en el taller
+            </div>
+          </div>
 
-          
+          <q-btn
+            color="primary"
+            icon="add"
+            label="Registrar servicio"
+            @click="nuevoServicio"
+          />
+
+        </div>
+
+
+        <q-card
+          v-if="servicios.length === 0"
+          class="q-pa-xl text-center"
+        >
+          <q-icon
+            name="phone_android"
+            size="80px"
+            color="grey-5"
+          />
+
+          <div class="text-h6 q-mt-md text-grey-7">
+            No hay servicios registrados
+          </div>
+
+          <div class="text-grey-6 q-mb-md">
+            Registra el primer equipo del taller.
+          </div>
+
+          <q-btn
+            color="primary"
+            icon="add"
+            label="Nuevo servicio"
+            @click="nuevoServicio"
+          />
+        </q-card>
+
+
+        <div
+          v-for="servicio in servicios"
+          :key="servicio.id"
+          class="q-mb-md"
+        >
+
           <q-card
-            v-for="servicio in servicios"
-            :key="servicio.id"
-            flat
-            bordered
-            class="q-mb-md"
+            class="service-card"
+            :class="{
+              'payment-pending': servicio.estadoPago === 'Pendiente',
+              'payment-abono': servicio.estadoPago === 'Abono',
+              'payment-paid': servicio.estadoPago === 'Pagado'
+            }"
           >
+
             <q-card-section>
 
-              <div class="row items-center justify-between">
+              <div class="row items-start justify-between">
 
                 <div class="row items-center">
+
                   <q-avatar
-                    color="blue-1"
-                    text-color="primary"
-                    size="50px"
+                    color="primary"
+                    text-color="white"
+                    size="55px"
                   >
-                    <q-icon name="phone_android" />
+                    <q-icon name="phone_android" size="30px" />
                   </q-avatar>
 
                   <div class="q-ml-md">
+
                     <div class="text-h6 text-weight-bold">
-                      {{ servicio.equipo }}
+                      {{ servicio.marca }} {{ servicio.modelo }}
                     </div>
 
-                    <div class="text-grey">
-                      {{ servicio.cliente }}
+                    <div class="text-grey-7 cliente-line">
+                      Cliente: {{ servicio.cliente }}
                     </div>
+
                   </div>
+
                 </div>
 
-                <q-chip
-                  :color="
-                    servicio.estadoPago === 'Pagado'
-                      ? 'positive'
-                      : servicio.estadoPago === 'Abono'
-                      ? 'warning'
-                      : 'negative'
-                  "
-                  :text-color="
-                    servicio.estadoPago === 'Abono'
-                      ? 'dark'
-                      : 'white'
-                  "
-                >
-                  {{ servicio.estadoPago }}
-                </q-chip>
+                <div class="column items-end">
+
+                  <q-badge
+                    v-if="servicio.estadoPago === 'Pagado'"
+                    color="positive"
+                    class="q-pa-sm"
+                  >
+                    <q-icon name="check_circle" class="q-mr-xs" />
+                    Pagado
+                  </q-badge>
+
+                  <q-badge
+                    v-else-if="servicio.estadoPago === 'Abono'"
+                    color="warning"
+                    text-color="dark"
+                    class="q-pa-sm"
+                  >
+                    <q-icon name="payments" class="q-mr-xs" />
+                    Abono
+                  </q-badge>
+
+                  <q-badge
+                    v-else
+                    color="negative"
+                    class="q-pa-sm"
+                  >
+                    <q-icon name="warning" class="q-mr-xs" />
+                    Pendiente
+                  </q-badge>
+
+                  <q-badge
+                    v-if="servicio.estadoEquipo === 'Entregado'"
+                    color="grey-7"
+                    class="q-pa-sm q-mt-xs"
+                  >
+                    <q-icon name="lock" class="q-mr-xs" size="14px" />
+                    Registro cerrado
+                  </q-badge>
+
+                </div>
 
               </div>
 
@@ -224,63 +220,110 @@
 
             <q-card-section>
 
-              <div class="row q-col-gutter-lg">
+              <div class="row q-col-gutter-md">
 
                 <div class="col-12 col-sm-6 col-md-4">
-                  <b>Reparación</b>
-                  <div>{{ servicio.reparacion }}</div>
+                  <div class="info-label">Marca</div>
+                  <div class="info-value">
+                    <q-icon name="phone_iphone" color="primary" class="q-mr-xs" />
+                    {{ servicio.marca }}
+                  </div>
                 </div>
 
                 <div class="col-12 col-sm-6 col-md-4">
-                  <b>Técnico</b>
-                  <div>{{ servicio.tecnico }}</div>
+                  <div class="info-label">Modelo</div>
+                  <div class="info-value">
+                    {{ servicio.modelo }}
+                  </div>
                 </div>
 
                 <div class="col-12 col-sm-6 col-md-4">
-                  <b>Fecha</b>
-                  <div>{{ servicio.fecha }}</div>
+                  <div class="info-label">Tipo de reparación</div>
+                  <div class="info-value">
+                    <q-icon name="build" color="primary" class="q-mr-xs" />
+                    {{ servicio.reparacion }}
+                  </div>
                 </div>
 
                 <div class="col-12 col-sm-6 col-md-4">
-                  <b>Precio</b>
-                  <div class="text-primary text-weight-bold">
+                  <div class="info-label">Técnico</div>
+                  <div class="info-value">
+                    <q-icon name="engineering" color="primary" class="q-mr-xs" />
+                    {{ servicio.tecnico }}
+                  </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-4">
+                  <div class="info-label">Recepción</div>
+                  <div class="info-value">
+                    <q-icon name="event" color="primary" class="q-mr-xs" />
+                    {{ formatearFecha(servicio.fecha) }}
+                  </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-4">
+                  <div class="info-label">Precio</div>
+                  <div class="info-value text-weight-bold">
                     ${{ formatearPrecio(servicio.precio) }}
                   </div>
                 </div>
 
                 <div class="col-12 col-sm-6 col-md-4">
-                  <b>Método de pago</b>
-                  <div>{{ servicio.metodoPago }}</div>
+                  <div class="info-label">Método de pago</div>
+                  <div class="info-value">
+                    {{ servicio.metodoPago }}
+                  </div>
+                </div>
+
+                <div
+                  v-if="servicio.estadoPago === 'Abono'"
+                  class="col-12 col-sm-6 col-md-4"
+                >
+                  <div class="info-label">Valor del abono</div>
+                  <div class="info-value text-weight-bold">
+                    ${{ formatearPrecio(servicio.montoAbono) }}
+                  </div>
                 </div>
 
                 <div class="col-12 col-sm-6 col-md-4">
-                  <b>Estado del equipo</b>
-                  <div>{{ servicio.estadoEquipo }}</div>
+                  <div class="info-label">Estado del equipo</div>
+                  <div class="info-value">
+                    <span v-if="servicio.estadoEquipo === 'Recibido'">Recibido</span>
+                    <span v-else-if="servicio.estadoEquipo === 'En reparación'">En reparación</span>
+                    <span v-else-if="servicio.estadoEquipo === 'Listo para entregar'">Listo para entregar</span>
+                    <span v-else>Entregado</span>
+                  </div>
                 </div>
 
               </div>
-
               <div
-                v-if="servicio.calificacion"
+                v-if="servicio.estadoEquipo === 'Entregado' && servicio.calificacion > 0"
                 class="q-mt-md"
               >
-                <b>Calificación</b>
+                <div class="info-label">
+                  Calificación del cliente
+                </div>
 
-                <q-rating
-                  :model-value="servicio.calificacion"
-                  readonly
-                  color="orange"
-                  icon="star_border"
-                  icon-selected="star"
-                />
+                <div>
+                  <q-rating
+                    :model-value="servicio.calificacion"
+                    readonly
+                    size="25px"
+                    color="orange"
+                    icon="star_border"
+                    icon-selected="star"
+                  />
+                </div>
               </div>
 
               <div
                 v-if="servicio.observaciones"
-                class="bg-grey-2 q-pa-md q-mt-md rounded-borders"
+                class="q-mt-md observation-box"
               >
-                <b>Observaciones</b>
-                <div>{{ servicio.observaciones }}</div>
+                <div class="info-label">Observaciones</div>
+                <div class="observation-text">
+                  {{ servicio.observaciones }}
+                </div>
               </div>
 
             </q-card-section>
@@ -294,35 +337,51 @@
                 color="primary"
                 icon="edit"
                 label="Editar"
+                :disable="servicio.estadoEquipo === 'Entregado'"
                 @click="cargarServicio(servicio)"
-              />
+              >
+                <q-tooltip v-if="servicio.estadoEquipo === 'Entregado'">
+                  Un servicio entregado no se puede editar
+                </q-tooltip>
+              </q-btn>
 
               <q-btn
                 flat
                 color="negative"
                 icon="delete"
                 label="Eliminar"
-                @click="eliminarServicio(servicio.id)"
-              />
+                :disable="servicio.estadoEquipo === 'Entregado'"
+                @click="confirmarEliminar(servicio.id)"
+              >
+                <q-tooltip v-if="servicio.estadoEquipo === 'Entregado'">
+                  Un servicio entregado no se puede eliminar
+                </q-tooltip>
+              </q-btn>
 
             </q-card-actions>
+
           </q-card>
 
         </div>
+
       </q-page>
     </q-page-container>
 
-    <!-- MODAL -->
-    <q-dialog v-model="mostrarModal">
-      <q-card style="width: 650px; max-width: 95vw">
+
+    <q-dialog v-model="mostrarModal" persistent>
+
+      <q-card class="form-card">
 
         <q-card-section class="bg-primary text-white">
-          <div class="text-h6">
-            {{ modoEdicion ? 'Editar servicio' : 'Nuevo servicio' }}
+          <div class="row items-center">
+            <q-icon name="phone_android" size="30px" class="q-mr-sm" />
+            <div class="text-h6">
+              {{ modoEdicion ? 'Editar servicio' : 'Nuevo servicio' }}
+            </div>
           </div>
         </q-card-section>
 
-        <q-form @submit.prevent="guardarServicio">
+        <q-form ref="formRef" @submit.prevent="guardarServicio" greedy>
 
           <q-card-section>
 
@@ -330,87 +389,191 @@
               v-model="servicioActual.cliente"
               label="Nombre del cliente *"
               outlined
-              :rules="[v => !!v || 'Campo obligatorio']"
-              class="q-mb-md"
-            />
+              class="q-mb-md campo-formulario"
+              lazy-rules
+              :rules="[
+                val => !!val && val.trim().length > 0 || 'El nombre del cliente es obligatorio',
+                val => val.trim().length >= 3 || 'Mínimo 3 caracteres'
+              ]"
+            >
+              <template v-slot:prepend>
+                <q-icon name="person" />
+              </template>
+            </q-input>
 
-            <q-input
-              v-model="servicioActual.equipo"
-              label="Marca y modelo *"
+
+            <q-select
+              v-model="servicioActual.marca"
+              label="Marca del equipo *"
               outlined
-              :rules="[v => !!v || 'Campo obligatorio']"
-              class="q-mb-md"
-            />
+              class="q-mb-md campo-formulario"
+              :options="marcasDisponibles"
+              lazy-rules
+              :rules="[val => !!val || 'Selecciona la marca del equipo']"
+            >
+              <template v-slot:prepend>
+                <q-icon name="phone_android" />
+              </template>
+            </q-select>
 
+    
+            <q-input
+              v-model="servicioActual.modelo"
+              label="Modelo del equipo *"
+              placeholder="Ej: A15, iPhone 12, Redmi 10"
+              outlined
+              class="q-mb-md campo-formulario"
+              lazy-rules
+              :rules="[
+                val => !!val && val.trim().length > 0 || 'El modelo es obligatorio'
+              ]"
+            >
+              <template v-slot:prepend>
+                <q-icon name="smartphone" />
+              </template>
+            </q-input>
+
+  
             <q-select
               v-model="servicioActual.reparacion"
               label="Tipo de reparación *"
               outlined
-              :options="reparaciones"
-              :rules="[v => !!v || 'Selecciona una opción']"
-              class="q-mb-md"
+              class="q-mb-md campo-formulario"
+              :options="[
+                'Cambio de pantalla',
+                'Cambio de batería',
+                'Cambio de pin de carga',
+                'Liberación',
+                'Mantenimiento de software',
+                'Cambio de flex',
+                'Otros'
+              ]"
+              lazy-rules
+              :rules="[val => !!val || 'Selecciona el tipo de reparación']"
             />
 
             <q-select
               v-model="servicioActual.tecnico"
-              label="Técnico *"
+              label="Técnico que atendió *"
               outlined
-              :options="tecnicos"
-              :rules="[v => !!v || 'Selecciona una opción']"
-              class="q-mb-md"
+              class="q-mb-md campo-formulario"
+              :options="['Don Efraín', 'Carlos', 'Andrés']"
+              lazy-rules
+              :rules="[val => !!val || 'Selecciona el técnico']"
             />
 
+    
             <q-input
               v-model="servicioActual.fecha"
-              label="Fecha y hora *"
+              label="Fecha y hora de recepción (automática)"
               type="datetime-local"
               outlined
-              class="q-mb-md"
-            />
+              readonly
+              disable
+              class="q-mb-md campo-formulario"
+            >
+              <template v-slot:prepend>
+                <q-icon name="event" />
+              </template>
+              <template v-slot:hint>
+                Esta fecha se asigna automáticamente y no puede modificarse.
+              </template>
+            </q-input>
 
             <q-input
               v-model.number="servicioActual.precio"
-              label="Precio *"
+              label="Precio cobrado *"
               type="number"
               prefix="$"
               outlined
-              class="q-mb-md"
+              class="q-mb-md campo-formulario"
+              lazy-rules
+              :rules="[
+                val => val !== null && val !== '' && val !== undefined || 'El precio es obligatorio',
+                val => Number(val) >= 0 || 'El precio no puede ser negativo'
+              ]"
             />
 
             <q-select
               v-model="servicioActual.metodoPago"
               label="Método de pago *"
               outlined
-              :options="metodosPago"
-              class="q-mb-md"
+              class="q-mb-md campo-formulario"
+              :options="['Efectivo', 'Transferencia', 'Tarjeta']"
+              lazy-rules
+              :rules="[val => !!val || 'Selecciona el método de pago']"
             />
 
             <q-select
               v-model="servicioActual.estadoPago"
               label="Estado del pago *"
               outlined
-              :options="estadosPago"
-              class="q-mb-md"
+              class="q-mb-md campo-formulario"
+              :options="['Pagado', 'Pendiente', 'Abono']"
+              lazy-rules
+              :rules="[val => !!val || 'Selecciona el estado del pago']"
             />
 
+      
+            <q-input
+              v-if="servicioActual.estadoPago === 'Abono'"
+              v-model.number="servicioActual.montoAbono"
+              label="Valor del abono *"
+              type="number"
+              prefix="$"
+              outlined
+              class="q-mb-md campo-formulario"
+              lazy-rules
+              :rules="[
+                val => val !== null && val !== '' && val !== undefined || 'Ingresa el valor del abono',
+                val => Number(val) > 0 || 'El abono debe ser mayor a 0',
+                val => Number(val) <= Number(servicioActual.precio || 0) || 'El abono no puede ser mayor al precio total'
+              ]"
+            />
             <q-select
               v-model="servicioActual.estadoEquipo"
               label="Estado del equipo *"
               outlined
-              :options="estadosEquipo"
-              class="q-mb-md"
-            />
+              class="q-mb-md campo-formulario"
+              :options="['Recibido', 'En reparación', 'Listo para entregar', 'Entregado']"
+              :disable="!modoEdicion"
+              lazy-rules
+              :rules="[val => !!val || 'Selecciona el estado del equipo']"
+            >
+              <template v-slot:hint>
+                <span v-if="!modoEdicion">
+                  Todo equipo nuevo ingresa como "Recibido".
+                </span>
+              </template>
+            </q-select>
 
-            <div class="q-mb-md">
-              <div class="text-subtitle2">
-                Calificación
+          
+            <div
+              v-if="modoEdicion && servicioActual.estadoEquipo === 'Entregado'"
+              class="q-mb-md calificacion-box"
+            >
+              <div class="text-subtitle2 q-mb-sm">
+                Calificación del cliente *
               </div>
 
               <q-rating
                 v-model="servicioActual.calificacion"
+                size="35px"
                 color="orange"
-                size="30px"
+                icon="star_border"
+                icon-selected="star"
               />
+
+              <div
+                v-if="calificacionInvalida"
+                class="text-negative text-caption q-mt-xs"
+              >
+                Debes registrar la calificación del cliente antes de marcar el equipo como entregado.
+              </div>
+
+              <div class="text-caption text-grey-6 q-mt-xs">
+                El cliente evalúa el servicio en el momento de recoger el equipo.
+              </div>
             </div>
 
             <q-input
@@ -419,270 +582,398 @@
               type="textarea"
               outlined
               autogrow
+              class="campo-formulario"
+              placeholder="Ej: Pantalla partida en la esquina superior..."
             />
 
           </q-card-section>
 
-          <q-card-actions align="right">
-
+          <q-card-actions align="right" class="q-pa-md">
             <q-btn
               flat
               label="Cancelar"
-              @click="mostrarModal = false"
+              color="grey-7"
+              @click="cerrarFormulario"
             />
 
             <q-btn
-              color="primary"
               type="submit"
+              color="primary"
               icon="save"
               :label="modoEdicion ? 'Actualizar' : 'Guardar'"
             />
-
           </q-card-actions>
 
         </q-form>
+
       </q-card>
+
     </q-dialog>
 
   </q-layout>
 </template>
 
 <script setup>
-
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
+import { useQuasar } from 'quasar'
 import { useLocalStorage } from '@vueuse/core'
 
-const servicios = useLocalStorage(
-  'servicios-tecnicos-don-efrain',
-  []
-)
+const $q = useQuasar()
 
-const drawer = ref(true)
+const servicios = useLocalStorage('servicios-tecnicos-don-efrain', [])
+
 const mostrarModal = ref(false)
 const modoEdicion = ref(false)
+const formRef = ref(null)
+const calificacionInvalida = ref(false)
 
-const servicioActual = ref({
-  id: null,
-  cliente: '',
-  equipo: '',
-  reparacion: '',
-  tecnico: '',
-  fecha: '',
-  precio: 0,
-  metodoPago: '',
-  estadoPago: '',
-  estadoEquipo: '',
-  calificacion: 0,
-  observaciones: ''
-})
-
-const reparaciones = [
-  'Cambio de pantalla',
-  'Cambio de batería',
-  'Cambio de pin de carga',
-  'Liberación',
-  'Mantenimiento de software',
-  'Cambio de flex',
-  'Otros'
+const marcasDisponibles = [
+  'Samsung',
+  'Apple (iPhone)',
+  'Xiaomi',
+  'Motorola',
+  'Huawei',
+  'Tecno',
+  'Realme',
+  'Oppo',
+  'Vivo',
+  'Nokia',
+  'ZTE',
+  'Otro'
 ]
 
-const tecnicos = [
-  'Don Efraín',
-  'Carlos',
-  'Andrés'
-]
-
-const metodosPago = [
-  'Efectivo',
-  'Transferencia',
-  'Tarjeta'
-]
-
-const estadosPago = [
-  'Pagado',
-  'Pendiente',
-  'Abono'
-]
-
-const estadosEquipo = [
-  'Recibido',
-  'En reparación',
-  'Listo para entregar',
-  'Entregado'
-]
-
-const estadisticas = computed(() => [
-  {
-    titulo: 'Servicios',
-    valor: servicios.value.length,
-    icono: 'assignment',
-    color: 'primary'
-  },
-  {
-    titulo: 'Pendientes',
-    valor: contarPendientes(),
-    icono: 'schedule',
-    color: 'orange'
-  },
-  {
-    titulo: 'Pagados',
-    valor: contarPagados(),
-    icono: 'check_circle',
-    color: 'positive'
-  },
-  {
-    titulo: 'Ingresos',
-    valor: '$' + formatearPrecio(totalIngresos()),
-    icono: 'payments',
-    color: 'purple'
-  }
-])
-
-function limpiarFormulario() {
-
-  servicioActual.value = {
+function servicioVacio() {
+  return {
     id: null,
     cliente: '',
-    equipo: '',
+    marca: '',
+    modelo: '',
     reparacion: '',
     tecnico: '',
     fecha: '',
-    precio: 0,
+    precio: null,
     metodoPago: '',
     estadoPago: '',
-    estadoEquipo: '',
+    montoAbono: null,
+    estadoEquipo: 'Recibido',
     calificacion: 0,
     observaciones: ''
   }
+}
 
+const servicioActual = ref(servicioVacio())
+
+function fechaActualISO() {
+  const ahora = new Date()
+  const anio = ahora.getFullYear()
+  const mes = String(ahora.getMonth() + 1).padStart(2, '0')
+  const dia = String(ahora.getDate()).padStart(2, '0')
+  const hora = String(ahora.getHours()).padStart(2, '0')
+  const minutos = String(ahora.getMinutes()).padStart(2, '0')
+  return `${anio}-${mes}-${dia}T${hora}:${minutos}`
 }
 
 function nuevoServicio() {
-
   modoEdicion.value = false
-  limpiarFormulario()
+  calificacionInvalida.value = false
 
-  const ahora = new Date()
+  servicioActual.value = servicioVacio()
+  servicioActual.value.fecha = fechaActualISO()
+  servicioActual.value.estadoEquipo = 'Recibido'
 
-  const fecha =
-    ahora.getFullYear() + '-' +
-    String(ahora.getMonth() + 1).padStart(2, '0') + '-' +
-    String(ahora.getDate()).padStart(2, '0') + 'T' +
-    String(ahora.getHours()).padStart(2, '0') + ':' +
-    String(ahora.getMinutes()).padStart(2, '0')
-
-  servicioActual.value.fecha = fecha
   mostrarModal.value = true
-
 }
 
-function guardarServicio() {
+function cerrarFormulario() {
+  mostrarModal.value = false
+  if (formRef.value) {
+    formRef.value.resetValidation()
+  }
+}
+
+async function guardarServicio() {
+  const valido = await formRef.value.validate()
+
+  if (!valido) {
+    $q.notify({
+      type: 'negative',
+      message: 'Revisa los campos marcados, hay información obligatoria sin completar.'
+    })
+    return
+  }
+
+  // Regla especial: si se marca "Entregado" debe existir una calificación
+  if (
+    servicioActual.value.estadoEquipo === 'Entregado' &&
+    (!servicioActual.value.calificacion || servicioActual.value.calificacion <= 0)
+  ) {
+    calificacionInvalida.value = true
+    $q.notify({
+      type: 'negative',
+      message: 'Debes calificar el servicio antes de marcarlo como entregado.'
+    })
+    return
+  }
+
+  calificacionInvalida.value = false
+
+  // Si el estado de pago no es "Abono", no debe quedar un monto de abono residual
+  if (servicioActual.value.estadoPago !== 'Abono') {
+    servicioActual.value.montoAbono = null
+  }
 
   if (modoEdicion.value) {
-
-    const index = servicios.value.findIndex(
-      s => s.id === servicioActual.value.id
-    )
-
-    if (index !== -1) {
-      servicios.value[index] = {
-        ...servicioActual.value
-      }
-    }
-
+    editarServicio()
   } else {
-
-    servicios.value.push({
-      ...servicioActual.value,
-      id: Date.now()
-    })
-
+    agregarServicio()
   }
 
   mostrarModal.value = false
 
+  $q.notify({
+    type: 'positive',
+    message: modoEdicion.value ? 'Servicio actualizado correctamente' : 'Servicio registrado correctamente'
+  })
+}
+
+function agregarServicio() {
+  const nuevo = {
+    id: Date.now(),
+    cliente: servicioActual.value.cliente.trim(),
+    marca: servicioActual.value.marca,
+    modelo: servicioActual.value.modelo.trim(),
+    reparacion: servicioActual.value.reparacion,
+    tecnico: servicioActual.value.tecnico,
+    fecha: servicioActual.value.fecha,
+    precio: servicioActual.value.precio,
+    metodoPago: servicioActual.value.metodoPago,
+    estadoPago: servicioActual.value.estadoPago,
+    montoAbono: servicioActual.value.montoAbono,
+    estadoEquipo: servicioActual.value.estadoEquipo,
+    calificacion: 0,
+    observaciones: servicioActual.value.observaciones
+  }
+
+  servicios.value.push(nuevo)
 }
 
 function cargarServicio(servicio) {
+  if (servicio.estadoEquipo === 'Entregado') {
+    $q.notify({
+      type: 'warning',
+      message: 'Este servicio ya fue entregado y no se puede editar.'
+    })
+    return
+  }
 
   modoEdicion.value = true
+  calificacionInvalida.value = false
 
   servicioActual.value = {
-    ...servicio
+    id: servicio.id,
+    cliente: servicio.cliente,
+    marca: servicio.marca,
+    modelo: servicio.modelo,
+    reparacion: servicio.reparacion,
+    tecnico: servicio.tecnico,
+    fecha: servicio.fecha,
+    precio: servicio.precio,
+    metodoPago: servicio.metodoPago,
+    estadoPago: servicio.estadoPago,
+    montoAbono: servicio.montoAbono,
+    estadoEquipo: servicio.estadoEquipo,
+    calificacion: servicio.calificacion,
+    observaciones: servicio.observaciones
   }
 
   mostrarModal.value = true
+}
 
+function editarServicio() {
+  for (let i = 0; i < servicios.value.length; i++) {
+    if (servicios.value[i].id === servicioActual.value.id) {
+      servicios.value[i] = {
+        id: servicioActual.value.id,
+        cliente: servicioActual.value.cliente.trim(),
+        marca: servicioActual.value.marca,
+        modelo: servicioActual.value.modelo.trim(),
+        reparacion: servicioActual.value.reparacion,
+        tecnico: servicioActual.value.tecnico,
+        fecha: servicioActual.value.fecha,
+        precio: servicioActual.value.precio,
+        metodoPago: servicioActual.value.metodoPago,
+        estadoPago: servicioActual.value.estadoPago,
+        montoAbono: servicioActual.value.montoAbono,
+        estadoEquipo: servicioActual.value.estadoEquipo,
+        calificacion: servicioActual.value.calificacion,
+        observaciones: servicioActual.value.observaciones
+      }
+      break
+    }
+  }
+}
+
+function confirmarEliminar(id) {
+  const servicio = servicios.value.find(s => s.id === id)
+
+  if (servicio && servicio.estadoEquipo === 'Entregado') {
+    $q.notify({
+      type: 'warning',
+      message: 'Este servicio ya fue entregado y no se puede eliminar.'
+    })
+    return
+  }
+
+  $q.dialog({
+    title: 'Eliminar servicio',
+    message: '¿Está seguro de eliminar este servicio? Esta acción no se puede deshacer.',
+    persistent: true,
+    ok: { label: 'Eliminar', color: 'negative', flat: true },
+    cancel: { label: 'Cancelar', color: 'grey-7', flat: true }
+  }).onOk(() => {
+    eliminarServicio(id)
+  })
 }
 
 function eliminarServicio(id) {
-
-  if (
-    window.confirm(
-      '¿Está seguro de eliminar este servicio?'
-    )
-  ) {
-
-    servicios.value =
-      servicios.value.filter(
-        servicio => servicio.id !== id
-      )
-
+  for (let i = 0; i < servicios.value.length; i++) {
+    if (servicios.value[i].id === id) {
+      servicios.value.splice(i, 1)
+      break
+    }
   }
 
+  $q.notify({
+    type: 'positive',
+    message: 'Servicio eliminado correctamente'
+  })
 }
 
 function contarPendientes() {
-
-  return servicios.value.filter(
-    servicio =>
-      servicio.estadoEquipo !== 'Entregado'
-  ).length
-
+  let cantidad = 0
+  for (let i = 0; i < servicios.value.length; i++) {
+    if (servicios.value[i].estadoEquipo !== 'Entregado') {
+      cantidad++
+    }
+  }
+  return cantidad
 }
 
 function contarPagados() {
-
-  return servicios.value.filter(
-    servicio =>
-      servicio.estadoPago === 'Pagado'
-  ).length
-
-}
-
-function totalIngresos() {
-
-  return servicios.value.reduce(
-    (total, servicio) =>
-      total + (Number(servicio.precio) || 0),
-    0
-  )
-
+  let cantidad = 0
+  for (let i = 0; i < servicios.value.length; i++) {
+    if (servicios.value[i].estadoPago === 'Pagado') {
+      cantidad++
+    }
+  }
+  return cantidad
 }
 
 function formatearPrecio(precio) {
-
-  return Number(precio || 0).toLocaleString(
-    'es-CO'
-  )
-
+  if (!precio) {
+    return '0'
+  }
+  return Number(precio).toLocaleString('es-CO')
 }
 
+function formatearFecha(fechaISO) {
+  if (!fechaISO) return ''
+  const fecha = new Date(fechaISO)
+  if (isNaN(fecha.getTime())) return fechaISO
+  return fecha.toLocaleString('es-CO', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
 </script>
 
-<style scoped>
-
+<style>
 body {
   margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
 }
 
-q-card {
+.dashboard-card {
   border-radius: 14px;
+  transition: 0.2s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+}
+
+.service-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border-left: 6px solid #1976d2;
+  transition: 0.2s;
+}
+
+.service-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.12);
+}
+
+.payment-pending {
+  border-left-color: #f44336;
+}
+
+.payment-abono {
+  border-left-color: #ff9800;
+}
+
+.payment-paid {
+  border-left-color: #21ba45;
+}
+
+.cliente-line {
+  font-size: 15px;
+}
+
+.info-label {
+  color: #616161;
+  font-size: 14px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.info-value {
+  color: #212121;
+  font-size: 17px;
+}
+
+.observation-box {
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.observation-text {
+  font-size: 16px;
+}
+
+.calificacion-box {
+  background: #fff8e1;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.campo-formulario {
+  font-size: 16px;
+}
+
+.campo-formulario :deep(.q-field__label) {
+  font-size: 15px;
+}
+
+.form-card {
+  width: 650px;
+  max-width: 95vw;
+  border-radius: 15px;
 }
 
 </style>
-```
-
-
-
-
