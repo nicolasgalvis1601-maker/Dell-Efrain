@@ -1384,7 +1384,7 @@
 
               v-model.number="servicioActual.montoAbono"
 
-              label="Valor del abono \*"
+              label="Valor del abono "
 
               type="number"
 
@@ -1449,7 +1449,7 @@
 
               v-model="servicioActual.estadoEquipo"
 
-              label="Estado del equipo \*"
+              label="Estado del equipo "
 
               outlined
 
